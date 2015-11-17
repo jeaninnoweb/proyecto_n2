@@ -41,6 +41,7 @@ $(window).on('load', function() {
 	// -----------------------------------------------------------------
 	var rowSelection = $('#demo-dt-selection').DataTable({
 		"responsive": true,
+    	"bLengthChange": false,   
 		"language": {
 			"paginate": {
 			  "previous": '<i class="fa fa-angle-left"></i>',
