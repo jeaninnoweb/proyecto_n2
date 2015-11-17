@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50621
 File Encoding         : 65001
 
-Date: 2015-11-17 04:31:03
+Date: 2015-11-17 15:15:19
 */
 DROP DATABASE IF EXISTS `bd_nuevo`;
 CREATE DATABASE IF NOT EXISTS `bd_nuevo` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
@@ -43,12 +43,11 @@ INSERT INTO `cliente` VALUES ('2', 'Av. Lima 123', '943103555', 'Jean Carlos San
 -- ----------------------------
 DROP TABLE IF EXISTS `cliente_juridico`;
 CREATE TABLE `cliente_juridico` (
-  `id_clientejuridico` int(11) NOT NULL AUTO_INCREMENT,
   `ruc_clientejuridico` char(11) NOT NULL,
   `razonsocial_clientejuridico` varchar(50) NOT NULL,
   `id_cliente` int(11) NOT NULL,
-  PRIMARY KEY (`id_clientejuridico`),
-  CONSTRAINT `fk_cliente_juridico_cliente1` FOREIGN KEY (`id_clientejuridico`) REFERENCES `cliente` (`id_cliente`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `fk_cliente_juridico_cliente1_idx` (`id_cliente`),
+  CONSTRAINT `fk_cliente_juridico_cliente1` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -84,10 +83,7 @@ CREATE TABLE `compro_pago` (
   `id_compropago` int(11) NOT NULL AUTO_INCREMENT,
   `tipo_compropago` char(1) NOT NULL,
   `nro_compropago` int(11) NOT NULL,
-  `id_cventa` int(11) NOT NULL,
-  PRIMARY KEY (`id_compropago`),
-  KEY `fk_compro_pago_detalle_venta1_idx` (`id_cventa`),
-  CONSTRAINT `fk_compro_pago_detalle_venta1` FOREIGN KEY (`id_cventa`) REFERENCES `detalle_venta` (`id_dventa`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  PRIMARY KEY (`id_compropago`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -99,13 +95,14 @@ CREATE TABLE `compro_pago` (
 -- ----------------------------
 DROP TABLE IF EXISTS `detalle_venta`;
 CREATE TABLE `detalle_venta` (
-  `id_dventa` int(11) NOT NULL AUTO_INCREMENT,
-  `cant_dventa` int(11) NOT NULL,
-  `total_dventa` decimal(19,2) DEFAULT NULL,
   `id_venta` int(11) NOT NULL,
-  PRIMARY KEY (`id_dventa`),
-  KEY `id_venta` (`id_venta`),
-  CONSTRAINT `detalle_venta_ibfk_1` FOREIGN KEY (`id_venta`) REFERENCES `venta` (`id_venta`)
+  `id_producto` int(11) NOT NULL,
+  `cantidad_dtventa` int(11) NOT NULL,
+  `total_dtventa` decimal(19,2) NOT NULL,
+  PRIMARY KEY (`id_producto`,`id_venta`),
+  KEY `fk_detalle_venta_venta1_idx` (`id_venta`),
+  CONSTRAINT `fk_detalle_venta_producto1` FOREIGN KEY (`id_producto`) REFERENCES `producto` (`id_producto`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_detalle_venta_venta1` FOREIGN KEY (`id_venta`) REFERENCES `venta` (`id_venta`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -126,8 +123,6 @@ CREATE TABLE `permisos` (
 -- ----------------------------
 -- Records of permisos
 -- ----------------------------
-INSERT INTO `permisos` VALUES ('1', 'Administrador', 'Desarrollador de la aplicación');
-INSERT INTO `permisos` VALUES ('2', 'Cajero', 'Cajero');
 
 -- ----------------------------
 -- Table structure for producto
@@ -138,16 +133,13 @@ CREATE TABLE `producto` (
   `nombre_producto` varchar(100) NOT NULL,
   `precio_producto` decimal(19,2) NOT NULL,
   `descripcion_producto` varchar(300) NOT NULL,
-  `imagen_producto` varchar(100) DEFAULT NULL,
+  `imagen_producto` varchar(100) NOT NULL,
   PRIMARY KEY (`id_producto`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of producto
 -- ----------------------------
-INSERT INTO `producto` VALUES ('1', '1', '1.00', '2', 'hola');
-INSERT INTO `producto` VALUES ('2', '1', '1.00', '34', 'hola');
-INSERT INTO `producto` VALUES ('3', '1', '1.00', '5', 'hola');
 
 -- ----------------------------
 -- Table structure for usuario
@@ -170,7 +162,6 @@ CREATE TABLE `usuario` (
 -- ----------------------------
 -- Records of usuario
 -- ----------------------------
-INSERT INTO `usuario` VALUES ('1', 'demo', 'demo', 'demo', 'demo', 'demo', 'demo', '1');
 
 -- ----------------------------
 -- Table structure for venta
@@ -178,16 +169,16 @@ INSERT INTO `usuario` VALUES ('1', 'demo', 'demo', 'demo', 'demo', 'demo', 'demo
 DROP TABLE IF EXISTS `venta`;
 CREATE TABLE `venta` (
   `id_venta` int(11) NOT NULL AUTO_INCREMENT,
-  `numero_venta` int(11) NOT NULL,
-  `fecha_venta` date NOT NULL,
-  `id_producto` int(11) NOT NULL,
-  `id_cliente` int(11) NOT NULL,
   `id_usuario` int(11) NOT NULL,
+  `id_cliente` int(11) NOT NULL,
+  `id_compropago` int(11) NOT NULL,
+  `fecha_venta` date NOT NULL,
+  `total_venta` decimal(19,2) NOT NULL,
   PRIMARY KEY (`id_venta`),
-  KEY `id_producto` (`id_producto`),
   KEY `id_cliente` (`id_cliente`),
   KEY `id_usuario` (`id_usuario`),
-  CONSTRAINT `venta_ibfk_2` FOREIGN KEY (`id_producto`) REFERENCES `producto` (`id_producto`),
+  KEY `fk_venta_compro_pago1_idx` (`id_compropago`),
+  CONSTRAINT `fk_venta_compro_pago1` FOREIGN KEY (`id_compropago`) REFERENCES `compro_pago` (`id_compropago`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `venta_ibfk_3` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`),
   CONSTRAINT `venta_ibfk_4` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -217,8 +208,8 @@ DROP PROCEDURE IF EXISTS `sp_login_user`;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_login_user`(IN `username` varchar(50),IN `password` varchar(50))
 BEGIN
-	SELECT*FROM usuario u INNER JOIN permisos p ON p.id_permisos=u.id_permisos
-	WHERE u.alias_usuario=username AND password_usuario=password;
+  SELECT*FROM usuario u INNER JOIN permisos p ON p.id_permisos=u.id_permisos
+  WHERE u.alias_usuario=username AND password_usuario=password;
 END
 ;;
 DELIMITER ;
