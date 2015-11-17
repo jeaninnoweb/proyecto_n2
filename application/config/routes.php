@@ -56,3 +56,4 @@ $route['translate_uri_dashes'] = FALSE;
 
 $route['login'] = "login/login";
 $route['logout'] = "login/logout";
+$route['venta'] = "venta/index";

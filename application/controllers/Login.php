@@ -15,6 +15,8 @@ class Login extends CI_Controller {
 			case TRUE: 
 			// $data= array('nombre_usuario'=>$this->session->userdata('nombre_usuario'));    
 			$this->load->view('principal/header.html');
+			$this->load->view('principal/navbar.html');
+			$this->load->view('principal/menu.html');
 			$this->load->view('principal/index.html');
 			$this->load->view('principal/footer.html');
 			break;
