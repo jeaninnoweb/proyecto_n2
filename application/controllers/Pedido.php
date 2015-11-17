@@ -5,7 +5,7 @@ class Pedido extends CI_Controller {
 	public function __construct(){  
 		parent::__construct();     
 		// date_default_timezone_set('America/Lima'); 
-		// $this->load->model('login_model');
+		$this->load->model('pedido_model');
 	}
 
 	public function index()
@@ -33,7 +33,12 @@ class Pedido extends CI_Controller {
 	{
 		$json = file_get_contents('php://input');
 		$data = json_decode($json,TRUE);
-		$login = $this->login_model->validarlogin($data);
+		$count=count($data['all_products']);	
+
+		for ($i = 0; $i < $count; $i++){
+		 $registrar=$this->pedido_model->agregar_producto($data['all_products'][$i],$data['cant_products'][$i]);			
+	  	}
+		
 	}
 
 

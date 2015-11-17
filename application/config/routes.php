@@ -58,4 +58,4 @@ $route['login'] = "login/login";
 $route['logout'] = "login/logout";
 $route['venta'] = "venta/index";
 $route['pedido'] = "pedido/index";
-$route['agregar_producto'] = "pedido/agregar_producto
+$route['agregar_producto'] = "pedido/agregar_producto";
