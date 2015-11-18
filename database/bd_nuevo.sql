@@ -26,17 +26,10 @@ CREATE TABLE `cliente` (
   `id_cliente` int(11) NOT NULL AUTO_INCREMENT,
   `direccion_cliente` varchar(20) DEFAULT NULL,
   `telefono_cliente` varchar(20) DEFAULT NULL,
-  `email_cliente` varchar(100) NOT NULL,
-  `tipo_cliente` varchar(10) NOT NULL,
+  `email_cliente` varchar(100) NOT NULL,  
   `estado_cliente` char(1) DEFAULT NULL,
   PRIMARY KEY (`id_cliente`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
-
--- ----------------------------
--- Records of cliente
--- ----------------------------
-INSERT INTO `cliente` VALUES ('1', 'Av. Libertad 123', '987654321', 'Fernando Niembre', '9087654321', null);
-INSERT INTO `cliente` VALUES ('2', 'Av. Lima 123', '943103555', 'Jean Carlos Sanchez', '72662378', null);
 
 -- ----------------------------
 -- Table structure for cliente_juridico
@@ -75,16 +68,6 @@ CREATE TABLE `cliente_natural` (
 -- Records of cliente_natural
 -- ----------------------------
 
--- ----------------------------
--- Table structure for compro_pago
--- ----------------------------
-DROP TABLE IF EXISTS `compro_pago`;
-CREATE TABLE `compro_pago` (
-  `id_compropago` int(11) NOT NULL AUTO_INCREMENT,
-  `tipo_compropago` char(1) NOT NULL,
-  `nro_compropago` int(11) NOT NULL,
-  PRIMARY KEY (`id_compropago`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of compro_pago
@@ -177,23 +160,32 @@ INSERT INTO `usuario` VALUES ('1', 'demo', 'demo', 'demo', 'demo', '943103555', 
 DROP TABLE IF EXISTS `venta`;
 CREATE TABLE `venta` (
   `id_venta` int(11) NOT NULL AUTO_INCREMENT,
-  `id_usuario` int(11) NOT NULL,
-  `id_cliente` int(11) NOT NULL,
-  `id_compropago` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,  
+  `tipo_compropago` char(1) NOT NULL,
   `fecha_venta` date NOT NULL,
-  `total_venta` decimal(19,2) NOT NULL,
+  `total_venta` decimal(19,2) DEFAULT NULL,
   PRIMARY KEY (`id_venta`),
-  KEY `id_cliente` (`id_cliente`),
   KEY `id_usuario` (`id_usuario`),
-  KEY `fk_venta_compro_pago1_idx` (`id_compropago`),
-  CONSTRAINT `fk_venta_compro_pago1` FOREIGN KEY (`id_compropago`) REFERENCES `compro_pago` (`id_compropago`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `venta_ibfk_3` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`),
   CONSTRAINT `venta_ibfk_4` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of venta
 -- ----------------------------
+
+-- ----------------------------
+-- Procedure structure for sp_add_products
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `sp_insert_sale`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_insert_sale`(IN `vid_usuario` INT,IN `vtipo_compropago` char(1), IN `vfecha_venta` date,IN `vtotal_venta` decimal(19,2))
+BEGIN
+INSERT INTO venta(id_usuario, tipo_compropago,fecha_venta, total_venta) 
+VALUES(vid_usuario, vtipo_compropago,vfecha_venta, vtotal_venta);
+
+END
+;;
+DELIMITER ;
 
 -- ----------------------------
 -- Procedure structure for sp_add_products

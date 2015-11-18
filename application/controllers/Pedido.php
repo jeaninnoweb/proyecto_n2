@@ -28,7 +28,13 @@ class Pedido extends CI_Controller {
 			break;
 		}
 	}
-
+	public function registrar_venta()
+	{
+		$json = file_get_contents('php://input');
+		$data = json_decode($json,TRUE);
+		$this->pedido_model->registrar_venta($data);	
+	}
+ 
 	public function agregar_producto()
 	{
 		$json = file_get_contents('php://input');

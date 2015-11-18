@@ -28,6 +28,7 @@ function fnc_guardar_pedido () {
 	var productid;
 	var productcant;
 	var data={};
+	var data2={};
 
 	for (var i = 0; i < select_product; i++) {
 
@@ -43,36 +44,58 @@ function fnc_guardar_pedido () {
 	data.all_products=all_products;
 	data.cant_products= cant_products;
 
-	  $.ajax({
-	  url: "agregar_producto",
-	  type:'POST',
-	  data: JSON.stringify(data),
-	  contentType: "application/json; charset =utf-8",
-	  dataType: "json",
-	  success: function(resp)
-	  {
-	    // fn_msg_action('MENSAJE DE REGISTRO DE COLABORADOR',resp[0].MessageResult,resp[0].MessageValue);
-	    // $('#modal-participante').modal('hide');
+	data2.fecha_venta='2015-11-18';
+	data2.tipo_compropago='1';
+	data2.total_venta=0;
+	
+	// $.ajax({
+	// 	url: "agregar_producto",
+	// 	type:'POST',
+	// 	data: JSON.stringify(data),
+	// 	contentType: "application/json; charset =utf-8",
+	// 	dataType: "json",
+	// 	success: function(resp)
+	// 	{
+	// 		$modal_pedido.modal('hide');
+	// 	}
+	// }); 
 
-	   $modal_pedido.modal('hide');
-	  }
-	}); 	
+	$.ajax({
+		url: "registrar_venta",
+		type:'POST',
+		data: JSON.stringify(data2),
+		contentType: "application/json; charset =utf-8",
+		dataType: "json",
+		success: function(resp)
+		{
+			
+		}
+	}); 		
 }
 
 function listar_produtos () {
 
 	$.getJSON("listar_productos", function (data) {      
-	    
-	      $.each(data, function (i, item) {
-	      $divproductos.append('<div class="col-md-3">'
-										+'<div style="width:100%;height:80px;background:#333">'
-											+'<label style="width:100%;" class="form-checkbox form-icon btn btn-primary">'
-											+'<input type="checkbox" class="select-product" value="1"> Option 1</label>'
-										+'</div>'
-										+'<input type="text" placeholder="Cantidad" class="form-control cant_product">'
-									+'</div>');
-	      });
+		$divproductos.empty();
+		$.each(data, function (i, item) {
+			$divproductos.append('<div class="col-md-6" style="margin-bottom:20px;">'
+				+'<div style="width:100%;height:100%;background:#333">'
+				+'<label style="width:100%;" class="form-icon btn btn-primary">'
+				+'<input type="checkbox" class="select-product" value="'+item.id_producto+'">'+item.nombre_producto+'</label>'
+				+'<img src="assets/img/productos/hielo.jpg" style="height:80px;">&nbsp;&nbsp;<span style="color:#fff">PRECIO S/.'+item.precio_producto+'<span></div>'
+				+'<input type="text" style="background:#f0f8ff" placeholder="Cantidad" class="form-control cant_product">'
+				+'</div>');
+		});
 	});
+}
+
+function get_today(){
+
+  var d = new Date(); var meses=""; var dias=""; var horas=""; var minutos=""; var date = "";
+  meses = d.getMonth()+1;  if (meses<10) {  meses = "0"+meses; };
+  dias = d.getDate();  if (dias<10) {  dias = "0"+dias;  }; 
+  date = dias + "/" + meses + "/" + d.getFullYear();
+  return date;
 }
 
 

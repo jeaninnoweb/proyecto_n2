@@ -2,6 +2,15 @@
 
 class Pedido_model extends CI_Model {
 
+  public function registrar_venta($data)
+  {
+    $fecha_venta=$data['fecha_venta'];
+    $tipo_compropago=$data['tipo_compropago'];
+    $total_venta=$data['total_venta'];
+    $id_usuario=$this->session->userdata('id_usuario');
+    $query=$this->db->query("CALL sp_insert_sale($id_usuario,'$fecha_venta','$tipo_compropago',$total_venta);");
+  }
+
   public function agregar_producto($id_producto,$cant_producto)
   {
     $query=$this->db->query("CALL sp_add_products('$id_producto','$cant_producto');");
@@ -20,7 +29,7 @@ class Pedido_model extends CI_Model {
     else
     {
       return false;
-    }  
+    }   
   }
 }
 
