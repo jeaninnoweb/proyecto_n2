@@ -8,7 +8,16 @@ class Pedido_model extends CI_Model {
     $tipo_compropago=$data['tipo_compropago'];
     $total_venta=$data['total_venta'];
     $id_usuario=$this->session->userdata('id_usuario');
-    $query=$this->db->query("CALL sp_insert_sale($id_usuario,'$fecha_venta','$tipo_compropago',$total_venta);");
+    $query=$this->db->query("CALL sp_insert_sale($id_usuario,'$tipo_compropago','$fecha_venta',$total_venta,@idventa_out);");
+    if ($query->num_rows()==1)
+    {
+     return $query->row();
+    }
+
+    else
+    {
+     return false; 
+    }
   }
 
   public function agregar_producto($id_producto,$cant_producto)

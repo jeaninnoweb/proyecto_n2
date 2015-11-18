@@ -41,34 +41,35 @@ function fnc_guardar_pedido () {
 		}
 	};
 
-	data.all_products=all_products;
-	data.cant_products= cant_products;
+	data.fecha_venta=get_today();
+	data.tipo_compropago='1';
+	data.total_venta=0;
 
-	data2.fecha_venta='2015-11-18';
-	data2.tipo_compropago='1';
-	data2.total_venta=0;
+	data2.all_products=all_products;
+	data2.cant_products= cant_products;
 	
-	// $.ajax({
-	// 	url: "agregar_producto",
-	// 	type:'POST',
-	// 	data: JSON.stringify(data),
-	// 	contentType: "application/json; charset =utf-8",
-	// 	dataType: "json",
-	// 	success: function(resp)
-	// 	{
-	// 		$modal_pedido.modal('hide');
-	// 	}
-	// }); 
 
 	$.ajax({
 		url: "registrar_venta",
 		type:'POST',
-		data: JSON.stringify(data2),
+		data: JSON.stringify(data),
 		contentType: "application/json; charset =utf-8",
 		dataType: "json",
 		success: function(resp)
 		{
-			
+			var id_venta=resp.idventa_out;
+			data2.id_venta= id_venta;
+			$.ajax({
+				url: "agregar_producto",
+				type:'POST',
+				data: JSON.stringify(data),
+				contentType: "application/json; charset =utf-8",
+				dataType: "json",
+				success: function(resp)
+				{
+					$modal_pedido.modal('hide');
+				}
+			}); 
 		}
 	}); 		
 }
@@ -94,7 +95,7 @@ function get_today(){
   var d = new Date(); var meses=""; var dias=""; var horas=""; var minutos=""; var date = "";
   meses = d.getMonth()+1;  if (meses<10) {  meses = "0"+meses; };
   dias = d.getDate();  if (dias<10) {  dias = "0"+dias;  }; 
-  date = dias + "/" + meses + "/" + d.getFullYear();
+  date = d.getFullYear()+"-"+ meses + "-" +dias;
   return date;
 }
 

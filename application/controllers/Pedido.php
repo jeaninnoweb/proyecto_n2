@@ -32,7 +32,8 @@ class Pedido extends CI_Controller {
 	{
 		$json = file_get_contents('php://input');
 		$data = json_decode($json,TRUE);
-		$this->pedido_model->registrar_venta($data);	
+		$registrar_venta=$this->pedido_model->registrar_venta($data);
+		echo json_encode($registrar_venta);	
 	}
  
 	public function agregar_producto()

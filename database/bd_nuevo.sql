@@ -178,11 +178,13 @@ CREATE TABLE `venta` (
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `sp_insert_sale`;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_insert_sale`(IN `vid_usuario` INT,IN `vtipo_compropago` char(1), IN `vfecha_venta` date,IN `vtotal_venta` decimal(19,2))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_insert_sale`(IN `vid_usuario` INT,IN `vtipo_compropago` char(1), IN `vfecha_venta` date,IN `vtotal_venta` decimal(19,2),
+OUT `idventa_out` INT)
 BEGIN
 INSERT INTO venta(id_usuario, tipo_compropago,fecha_venta, total_venta) 
 VALUES(vid_usuario, vtipo_compropago,vfecha_venta, vtotal_venta);
-
+SELECT LAST_INSERT_ID() INTO idventa_out;
+SELECT idventa_out;
 END
 ;;
 DELIMITER ;
