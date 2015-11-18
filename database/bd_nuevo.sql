@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50621
 File Encoding         : 65001
 
-Date: 2015-11-17 15:15:19
+Date: 2015-11-17 23:56:39
 */
 DROP DATABASE IF EXISTS `bd_nuevo`;
 CREATE DATABASE IF NOT EXISTS `bd_nuevo` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
@@ -118,11 +118,12 @@ CREATE TABLE `permisos` (
   `nombre_permisos` varchar(50) NOT NULL,
   `descripcion_permisos` varchar(100) NOT NULL,
   PRIMARY KEY (`id_permisos`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of permisos
 -- ----------------------------
+INSERT INTO `permisos` VALUES ('1', 'Administrador', 'Administrador');
 
 -- ----------------------------
 -- Table structure for producto
@@ -135,11 +136,17 @@ CREATE TABLE `producto` (
   `descripcion_producto` varchar(300) NOT NULL,
   `imagen_producto` varchar(100) NOT NULL,
   PRIMARY KEY (`id_producto`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of producto
 -- ----------------------------
+INSERT INTO `producto` VALUES ('1', 'HIELO TIPO CUBO (BOLSA)', '2.00', '', '');
+INSERT INTO `producto` VALUES ('2', 'HIELO TIPO BLOQUE', '3.00', '', '');
+INSERT INTO `producto` VALUES ('3', 'HIELO TIPO PELLET O TIPO RICE', '1.00', '', '');
+INSERT INTO `producto` VALUES ('4', 'HIELO TIPO NUGGET', '2.00', '', '');
+INSERT INTO `producto` VALUES ('5', 'HIELO TIPO SLICE O SLAB', '3.00', '', '');
+INSERT INTO `producto` VALUES ('6', 'HIELO TIPO FRAPPÉ', '2.00', '', '');
 
 -- ----------------------------
 -- Table structure for usuario
@@ -162,6 +169,7 @@ CREATE TABLE `usuario` (
 -- ----------------------------
 -- Records of usuario
 -- ----------------------------
+INSERT INTO `usuario` VALUES ('1', 'demo', 'demo', 'demo', 'demo', '943103555', 'user@hotmail.comn', '1');
 
 -- ----------------------------
 -- Table structure for venta
