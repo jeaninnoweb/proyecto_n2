@@ -5,6 +5,7 @@ var $btn_modal_nuevopedido=$('#btn-modal-nuevopedido');
 var $modal_pedido=$('#modal_pedido');
 var $table_add_product=$('#table-add-product');
 var $btn_guardar_pedido=$('#btn-guardar-pedido');
+var $divproductos=$('#divproductos');
 
 
 function page_pedido(){
@@ -15,7 +16,8 @@ function page_pedido(){
 }
 
 function fnc_modal_nuevopedido () {
-	$modal_pedido.modal('show');	
+	$modal_pedido.modal('show');
+	listar_produtos ();	
 }
 
 function fnc_guardar_pedido () {
@@ -54,7 +56,23 @@ function fnc_guardar_pedido () {
 
 	   $modal_pedido.modal('hide');
 	  }
-	}); 
-	
+	}); 	
 }
+
+function listar_produtos () {
+
+	$.getJSON("listar_productos", function (data) {      
+	    
+	      $.each(data, function (i, item) {
+	      $divproductos.append('<div class="col-md-3">'
+										+'<div style="width:100%;height:80px;background:#333">'
+											+'<label style="width:100%;" class="form-checkbox form-icon btn btn-primary">'
+											+'<input type="checkbox" class="select-product" value="1"> Option 1</label>'
+										+'</div>'
+										+'<input type="text" placeholder="Cantidad" class="form-control cant_product">'
+									+'</div>');
+	      });
+	});
+}
+
 

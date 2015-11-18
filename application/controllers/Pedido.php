@@ -35,11 +35,14 @@ class Pedido extends CI_Controller {
 		$data = json_decode($json,TRUE);
 		$count=count($data['all_products']);	
 
-		for ($i = 0; $i < $count; $i++){
-		 $registrar=$this->pedido_model->agregar_producto($data['all_products'][$i],$data['cant_products'][$i]);			
-	  	}
-		
+		for ($i = 0; $i < $count; $i++)
+		{
+		 $this->pedido_model->agregar_producto($data['all_products'][$i],$data['cant_products'][$i]);			
+	  	}		
 	}
-
-
+	public function listar_productos()
+	{
+		$listar_productos=$this->pedido_model->listar_productos();
+    	echo json_encode($listar_productos);
+	}
 }
