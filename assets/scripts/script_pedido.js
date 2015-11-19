@@ -3,16 +3,18 @@ $(document).ready(page_pedido);
 
 var $btn_modal_nuevopedido=$('#btn-modal-nuevopedido');
 var $modal_pedido=$('#modal_pedido');
-var $table_add_product=$('#table-add-product');
+// var $table_add_product=$('#demo-dt-addrow').DataTable({"bPaginate": true, "bLengthChange": false, "bFilter": false, "bInfo": false, "bAutoWidth": false});
 var $btn_guardar_pedido=$('#btn-guardar-pedido');
 var $divproductos=$('#divproductos');
-
+var datatable_sale;
+var $table_sale=$('#datable-sale').DataTable({"responsive": true, "language": {"paginate": {"previous": '<i class="fa fa-angle-left"></i>', "next": '<i class="fa fa-angle-right"></i>'} }, "dom": '<"newtoolbar">frtip'});
 
 function page_pedido(){
 	$btn_modal_nuevopedido.on('click',fnc_modal_nuevopedido);
-	$table_add_product.DataTable({"bPaginate": true, "bLengthChange": false, "bFilter": false, "bInfo": false, "bAutoWidth": false});
+	
     $modal_pedido.find('.modal-dialog').css('width','700px');
     $btn_guardar_pedido.on('click',fnc_guardar_pedido);
+    listar_ventas ();
 }
 
 function fnc_modal_nuevopedido () {
@@ -44,11 +46,6 @@ function fnc_guardar_pedido () {
 	data.fecha_venta=get_today();
 	data.tipo_compropago='1';
 	data.total_venta=0;
-
-	data2.all_products=all_products;
-	data2.cant_products= cant_products;
-	
-
 	$.ajax({
 		url: "registrar_venta",
 		type:'POST',
@@ -57,23 +54,39 @@ function fnc_guardar_pedido () {
 		dataType: "json",
 		success: function(resp)
 		{
-			var id_venta=resp.idventa_out;
+			var id_venta=resp.idventa_out;			
 			data2.id_venta= id_venta;
+			data2.all_products=all_products;
+			data2.cant_products= cant_products;
+
 			$.ajax({
 				url: "agregar_producto",
 				type:'POST',
-				data: JSON.stringify(data),
+				data: JSON.stringify(data2),
 				contentType: "application/json; charset =utf-8",
 				dataType: "json",
 				success: function(resp)
 				{
 					$modal_pedido.modal('hide');
+					listar_ventas ();
 				}
 			}); 
 		}
 	}); 		
 }
-
+function listar_ventas () {	
+	var nro=1;
+	$.getJSON("listar_ventas", function (data) {      
+			$table_sale.row().clear().draw( false );
+			$.each(data, function (i, item) {				
+				$table_sale.row.add([nro,item.id_venta,item.fecha_venta,item.tipo_compropago,item.nro_productos,item.total_venta,
+				'<a href="javascript:void(0);" data-idedit="'+item.id_venta+'" class="btn btn-primary btn-xs editincidence editocurrencia" title="Editar Ocurrencia"><i class="fa fa-bars iconaction" style="font-size:15px;"></i></a>'
+				+'&nbsp;<a href="javascript:void(0);" data-idedit="'+item.id_venta+'" class="btn btn-primary btn-xs editincidence editocurrencia" title="Editar Ocurrencia"><i class="fa fa-pencil iconaction" style="font-size:15px;"></i></a>'
+                +'&nbsp;<a data-idremove="'+item.id_venta+'" href="#modal_remove-incidence" data-toggle="modal" class="btn btn-danger btn-xs removeincidence" title="Eliminar Ocurrencia"><i class="fa fa-remove iconaction" style="font-size:15px;"></i> </a>']).draw(false);
+				nro++;
+			});
+		});
+}
 function listar_produtos () {
 
 	$.getJSON("listar_productos", function (data) {      

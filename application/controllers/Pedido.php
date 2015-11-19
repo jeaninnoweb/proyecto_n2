@@ -22,7 +22,7 @@ class Pedido extends CI_Controller {
 			break;
 
 			case FALSE: 
-			$this->load->view('principal/header.html');
+			$this->load->view('principal/header.html'); 
 			$this->load->view('login/login.html');
 			$this->load->view('principal/footer.html');
 			break;
@@ -33,7 +33,7 @@ class Pedido extends CI_Controller {
 		$json = file_get_contents('php://input');
 		$data = json_decode($json,TRUE);
 		$registrar_venta=$this->pedido_model->registrar_venta($data);
-		echo json_encode($registrar_venta);	
+		echo json_encode($registrar_venta);
 	}
  
 	public function agregar_producto()
@@ -44,12 +44,20 @@ class Pedido extends CI_Controller {
 
 		for ($i = 0; $i < $count; $i++)
 		{
-		 $this->pedido_model->agregar_producto($data['all_products'][$i],$data['cant_products'][$i]);			
-	  	}		
+			$agregar_producto=$this->pedido_model->agregar_producto($data['id_venta'][0],$data['all_products'][$i],$data['cant_products'][$i]);
+	  	}
+	  	echo json_encode(1);
+	  	
 	}
 	public function listar_productos()
 	{
 		$listar_productos=$this->pedido_model->listar_productos();
     	echo json_encode($listar_productos);
+	}
+
+	public function listar_ventas()
+	{
+		$listar_ventas=$this->pedido_model->listar_ventas();
+    	echo json_encode($listar_ventas);
 	}
 }

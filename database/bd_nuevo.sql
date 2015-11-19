@@ -194,10 +194,23 @@ DELIMITER ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `sp_add_products`;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_add_products`(IN `ejemplo1` varchar(50),IN `ejemplo2` varchar(50))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_add_products`(IN `vid_venta` INT,IN `vid_producto` INT,IN `vcantidad_dtventa` INT)
 BEGIN
-INSERT INTO producto(nombre_producto, precio_producto,descripcion_producto, imagen_producto) 
-VALUES(ejemplo1,1,ejemplo2,'hola');
+DECLARE vprecio_producto decimal(19,2);
+DECLARE vtotal_dtventa decimal(19,2);
+DECLARE vtotal_dventa decimal(19,2);
+
+
+SELECT precio_producto INTO vprecio_producto FROM producto WHERE id_producto=vid_producto;
+SET vtotal_dtventa=vprecio_producto*vcantidad_dtventa;
+
+INSERT INTO detalle_venta(id_venta, id_producto,cantidad_dtventa, total_dtventa) 
+VALUES(vid_venta, vid_producto,vcantidad_dtventa, vtotal_dtventa);
+
+SELECT SUM(total_dtventa) INTO vtotal_dventa FROM detalle_venta WHERE id_venta=vid_venta;
+
+UPDATE venta SET total_venta=vtotal_dventa WHERE id_venta=vid_venta;
+
 
 END
 ;;
@@ -212,6 +225,42 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_login_user`(IN `username` varcha
 BEGIN
   SELECT*FROM usuario u INNER JOIN permisos p ON p.id_permisos=u.id_permisos
   WHERE u.alias_usuario=username AND password_usuario=password;
+END
+;;
+DELIMITER ;
+
+-- ----------------------------
+-- Procedure structure for sp_get_sale
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `sp_get_sale`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_sale`(IN `vid_usuario` INT)
+BEGIN
+  SELECT v.id_venta,v.fecha_venta,v.tipo_compropago,v.total_venta,u.id_usuario,u.alias_usuario,
+  count(p.id_producto) as nro_productos
+  FROM detalle_venta dt INNER JOIN venta v ON v.id_venta=dt.id_venta
+  INNER JOIN producto p ON p.id_producto=dt.id_producto
+  INNER JOIN usuario u ON u.id_usuario=v.id_usuario
+  WHERE u.id_usuario=vid_usuario
+  GROUP BY v.id_venta;
+END
+;;
+DELIMITER ;
+
+
+-- ----------------------------
+-- Procedure structure for sp_get_detail_sale
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `sp_get_detail_sale`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_detail_sale`(IN `vid_usuario` INT)
+BEGIN
+  SELECT v.id_venta,p.id_producto,p.nombre_producto,p.imagen_producto,
+  p.descripcion_producto,dt.cantidad_dtventa,p.precio_producto,v.fecha_venta,v.tipo_compropago,u.alias_usuario,u.id_usuario 
+  FROM detalle_venta dt INNER JOIN venta v ON v.id_venta=dt.id_venta
+  INNER JOIN producto p ON p.id_producto=dt.id_producto
+  INNER JOIN usuario u ON u.id_usuario=v.id_usuario
+  WHERE u.id_usuario=vid_usuario;
 END
 ;;
 DELIMITER ;
