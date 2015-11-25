@@ -3,18 +3,38 @@ $(document).ready(page_pedido);
 
 var $btn_modal_nuevopedido=$('#btn-modal-nuevopedido');
 var $modal_pedido=$('#modal_pedido');
+var $modal_verpedido=$('#modal_verpedido');
 // var $table_add_product=$('#demo-dt-addrow').DataTable({"bPaginate": true, "bLengthChange": false, "bFilter": false, "bInfo": false, "bAutoWidth": false});
 var $btn_guardar_pedido=$('#btn-guardar-pedido');
 var $divproductos=$('#divproductos');
 var datatable_sale;
 var $table_sale=$('#datable-sale').DataTable({"responsive": true, "language": {"paginate": {"previous": '<i class="fa fa-angle-left"></i>', "next": '<i class="fa fa-angle-right"></i>'} }, "dom": '<"newtoolbar">frtip'});
+var $table_sale2=$('#datable-sale2').DataTable({"responsive": true,"bPaginate": false, "bSort": false,"bFilter":false,"bInfo" : false});
 
 function page_pedido(){
+
+	listar_ventas ();
 	$btn_modal_nuevopedido.on('click',fnc_modal_nuevopedido);
-	
-    $modal_pedido.find('.modal-dialog').css('width','700px');
-    $btn_guardar_pedido.on('click',fnc_guardar_pedido);
-    listar_ventas ();
+    $('.modal').find('.modal-dialog').css('width','700px');
+    $btn_guardar_pedido.on('click',fnc_guardar_pedido);  
+    $(document).on('click','.modal_ver_pedido',fnc_modal_verpedido);
+}
+
+function fnc_modal_verpedido () {
+	$modal_verpedido.modal('show');
+	var venta_id=$(this).attr('data-id');
+	var data={};
+	data.venta_id=venta_id;
+	$.ajax({
+		url: "consultar_venta",
+		type:'POST',
+		data: JSON.stringify(data),
+		contentType: "application/json; charset =utf-8",
+		dataType: "json",
+		success: function(resp)
+		{
+		}
+	});
 }
 
 function fnc_modal_nuevopedido () {
@@ -30,7 +50,7 @@ function fnc_guardar_pedido () {
 	var productid;
 	var productcant;
 	var data={};
-	var data2={};
+	var data2={}; 
 
 	for (var i = 0; i < select_product; i++) {
 
@@ -80,9 +100,9 @@ function listar_ventas () {
 			$table_sale.row().clear().draw( false );
 			$.each(data, function (i, item) {				
 				$table_sale.row.add([nro,item.id_venta,item.fecha_venta,item.tipo_compropago,item.nro_productos,item.total_venta,
-				'<a href="javascript:void(0);" data-idedit="'+item.id_venta+'" class="btn btn-primary btn-xs editincidence editocurrencia" title="Editar Ocurrencia"><i class="fa fa-bars iconaction" style="font-size:15px;"></i></a>'
-				+'&nbsp;<a href="javascript:void(0);" data-idedit="'+item.id_venta+'" class="btn btn-primary btn-xs editincidence editocurrencia" title="Editar Ocurrencia"><i class="fa fa-pencil iconaction" style="font-size:15px;"></i></a>'
-                +'&nbsp;<a data-idremove="'+item.id_venta+'" href="#modal_remove-incidence" data-toggle="modal" class="btn btn-danger btn-xs removeincidence" title="Eliminar Ocurrencia"><i class="fa fa-remove iconaction" style="font-size:15px;"></i> </a>']).draw(false);
+				'<a href="javascript:void(0);" data-id="'+item.id_venta+'" class="btn btn-primary btn-xs modal_ver_pedido" ><i class="fa fa-bars" style="font-size:15px;"></i></a>'
+				+'&nbsp;<a href="javascript:void(0);" data-id="'+item.id_venta+'" class="btn btn-primary btn-xs" ><i class="fa fa-pencil" style="font-size:15px;"></i></a>'
+                +'&nbsp;<a data-id="'+item.id_venta+'" class="btn btn-danger btn-xs"><i class="fa fa-remove" style="font-size:15px;"></i> </a>']).draw(false);
 				nro++;
 			});
 		});
