@@ -10,12 +10,22 @@ class Pedido extends CI_Controller {
 
 	public function index()
 	{
+		$idpermisos=$this->session->userdata('id_permisos');
+		
 		switch ($this->session->userdata('login')){
 
 			case TRUE:    
 			$this->load->view('principal/header.html');
 			$this->load->view('principal/navbar.html');
-			$this->load->view('principal/menu.html');
+			switch ($idpermisos) {
+				case 1:
+					$this->load->view('principal/menu.html');
+					break;
+				
+				case 2:
+					$this->load->view('principal/menu-cliente.html');
+					break;
+			}
 			$this->load->view('pedido/pedido.html');
 			$this->load->view('pedido/modal_pedido.html');
 			$this->load->view('principal/footer.html');
@@ -60,4 +70,12 @@ class Pedido extends CI_Controller {
 		$listar_ventas=$this->pedido_model->listar_ventas();
     	echo json_encode($listar_ventas);
 	}
+
+	public function consultar_venta()
+	{
+		$json = file_get_contents('php://input');
+		$data = json_decode($json,TRUE);
+		$consultar_venta=$this->pedido_model->consultar_venta($data);
+		echo json_encode($consultar_venta);
+	}	
 }

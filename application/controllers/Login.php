@@ -10,13 +10,25 @@ class Login extends CI_Controller {
 
 	public function index()
 	{
+		$idpermisos=$this->session->userdata('id_permisos');
+
 		switch ($this->session->userdata('login')){
 
-			case TRUE: 
-			// $data= array('nombre_usuario'=>$this->session->userdata('nombre_usuario'));    
+			case TRUE: 		
+			
 			$this->load->view('principal/header.html');
 			$this->load->view('principal/navbar.html');
-			$this->load->view('principal/menu.html');
+
+			switch ($idpermisos) {
+				case 1:
+					$this->load->view('principal/menu.html');
+					break;
+				
+				case 2:
+					$this->load->view('principal/menu-cliente.html');
+					break;
+			}
+			
 			$this->load->view('principal/index.html');
 			$this->load->view('principal/footer.html');
 			break;
@@ -40,7 +52,7 @@ class Login extends CI_Controller {
 			$var= array(
 			'id_usuario' => $login->id_usuario,
 			'id_permisos' => $login->id_permisos,
-			'nombre_usuario' => $login->nombre_usuario,
+			'nombres_persona' => $login->nombres_persona,
 			'alias_usuario' => $login->alias_usuario,
 			'login' => TRUE);
 			$this->session->set_userdata($var);

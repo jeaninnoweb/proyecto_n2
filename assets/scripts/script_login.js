@@ -9,7 +9,7 @@ function initPage(){
 	var $btn_login=$('#btn_login');
 	$btn_login.on('click',fnc_btn_login);
 	// $btn_logout.on('click',fnc_btn_logout);
-	$username_text.text(sessionStorage.getItem("nombre_usuario"));
+	$username_text.text(sessionStorage.getItem("nombres_persona"));
 }
 
 function fnc_btn_login () {
@@ -30,8 +30,8 @@ function fnc_btn_login () {
         },
         success: function (resp) { 
 
-			if(resp.nombre_usuario){$resp.empty(); window.location.reload();
-			sessionStorage.setItem("nombre_usuario",resp.nombre_usuario)
+			if(resp.nombres_persona){$resp.empty(); window.location.reload();
+			sessionStorage.setItem("nombres_persona",resp.nombres_persona)
 			}
 
 			else{$resp.html(resp);}

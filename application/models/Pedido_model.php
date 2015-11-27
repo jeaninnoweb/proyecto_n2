@@ -54,6 +54,21 @@ class Pedido_model extends CI_Model {
       return false;
     }   
   }
+
+  public function consultar_venta($data)
+  {
+    $id_venta=$data['id_venta'];
+    $query=$this->db->query("CALL sp_select_sale($id_venta);");
+
+    if ($query->num_rows()>0) 
+    {
+      return $query->result();
+    }
+    else
+    {
+      return false;
+    } 
+  }
 }
 
    

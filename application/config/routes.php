@@ -62,4 +62,5 @@ $route['registrar_venta'] = "pedido/registrar_venta";
 $route['agregar_producto'] = "pedido/agregar_producto";
 $route['listar_productos'] = "pedido/listar_productos";
 $route['listar_ventas'] = "pedido/listar_ventas";
-$route['consultar_ventas'] = "pedido/consultar_ventas";
+$route['consultar_venta'] = "pedido/consultar_venta";
+$route['listar_ventastotales'] = "venta/listar_ventastotales";
