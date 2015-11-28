@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50621
 File Encoding         : 65001
 
-Date: 2015-11-27 04:10:48
+Date: 2015-11-28 01:49:55
 */
 DROP DATABASE IF EXISTS `bd_nuevo`;
 CREATE DATABASE IF NOT EXISTS `bd_nuevo` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
@@ -32,13 +32,14 @@ CREATE TABLE `cliente` (
   PRIMARY KEY (`id_cliente`),
   KEY `fk_cliente_persona1_idx` (`id_persona`),
   CONSTRAINT `fk_cliente_persona1` FOREIGN KEY (`id_persona`) REFERENCES `persona` (`id_persona`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of cliente
 -- ----------------------------
 INSERT INTO `cliente` VALUES ('1', '2', 'av. lima', '12345678', 'demo@hotmail.com', '1');
 INSERT INTO `cliente` VALUES ('2', '3', 'jr ica', '22234545', 'cliente@hotmail.com', '1');
+INSERT INTO `cliente` VALUES ('3', '4', 'av libertad', '5454653434', 'sider@sider.com', '1');
 
 -- ----------------------------
 -- Table structure for cliente_juridico
@@ -52,11 +53,12 @@ CREATE TABLE `cliente_juridico` (
   PRIMARY KEY (`id_clientejuridico`),
   KEY `fk_cliente_juridico_cliente1_idx` (`id_cliente`),
   CONSTRAINT `fk_cliente_juridico_cliente1` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of cliente_juridico
 -- ----------------------------
+INSERT INTO `cliente_juridico` VALUES ('1', '77777777777', 'SIDERPERU', '3');
 
 -- ----------------------------
 -- Table structure for cliente_natural
@@ -77,6 +79,23 @@ INSERT INTO `cliente_natural` VALUES ('1', '1');
 INSERT INTO `cliente_natural` VALUES ('2', '2');
 
 -- ----------------------------
+-- Table structure for comprobante_pago
+-- ----------------------------
+DROP TABLE IF EXISTS `comprobante_pago`;
+CREATE TABLE `comprobante_pago` (
+  `id_compropago` int(11) NOT NULL AUTO_INCREMENT,
+  `tipo_compropago` char(1) NOT NULL,
+  `tipo_docidentidad` char(1) NOT NULL,
+  `nro_docidentidad` int(11) NOT NULL,
+  `nom_compropago` varchar(50) NOT NULL,
+  PRIMARY KEY (`id_compropago`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of comprobante_pago
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for detalle_venta
 -- ----------------------------
 DROP TABLE IF EXISTS `detalle_venta`;
@@ -94,13 +113,6 @@ CREATE TABLE `detalle_venta` (
 -- ----------------------------
 -- Records of detalle_venta
 -- ----------------------------
-INSERT INTO `detalle_venta` VALUES ('1', '1', '3', '6.00');
-INSERT INTO `detalle_venta` VALUES ('2', '1', '6', '12.00');
-INSERT INTO `detalle_venta` VALUES ('3', '1', '3', '6.00');
-INSERT INTO `detalle_venta` VALUES ('1', '2', '2', '6.00');
-INSERT INTO `detalle_venta` VALUES ('2', '2', '1', '3.00');
-INSERT INTO `detalle_venta` VALUES ('1', '3', '1', '1.00');
-INSERT INTO `detalle_venta` VALUES ('3', '3', '6', '6.00');
 
 -- ----------------------------
 -- Table structure for empleado
@@ -145,11 +157,11 @@ CREATE TABLE `persona` (
   `id_persona` int(11) NOT NULL AUTO_INCREMENT,
   `apellidos_persona` varchar(50) NOT NULL,
   `nombres_persona` varchar(50) NOT NULL,
-  `dni_persona` char(8) NOT NULL,
-  `sexo_persona` char(1) NOT NULL,
-  `fechanac_persona` date NOT NULL,
+  `dni_persona` char(8) DEFAULT NULL,
+  `sexo_persona` char(1) DEFAULT NULL,
+  `fechanac_persona` date DEFAULT NULL,
   PRIMARY KEY (`id_persona`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of persona
@@ -157,6 +169,7 @@ CREATE TABLE `persona` (
 INSERT INTO `persona` VALUES ('1', 'Jimenez', 'Pedro Administrador', '12345678', 'm', '1993-05-12');
 INSERT INTO `persona` VALUES ('2', 'demo', 'demo', '88888888', 'm', '1990-10-17');
 INSERT INTO `persona` VALUES ('3', 'cliente', 'cliente', '77777777', 'm', '1994-06-15');
+INSERT INTO `persona` VALUES ('4', 'sider', 'sider', '', '', '0000-00-00');
 
 -- ----------------------------
 -- Table structure for producto
@@ -203,7 +216,8 @@ CREATE TABLE `usuario` (
 -- ----------------------------
 INSERT INTO `usuario` VALUES ('1', '2', '2', 'demo', 'demo');
 INSERT INTO `usuario` VALUES ('2', '1', '1', 'admin', 'admin');
-INSERT INTO `usuario` VALUES ('4', '2', '3', 'cliente', 'cliente');
+INSERT INTO `usuario` VALUES ('3', '2', '3', 'cliente', 'cliente');
+INSERT INTO `usuario` VALUES ('4', '2', '4', 'sider', 'sider');
 
 -- ----------------------------
 -- Table structure for venta
@@ -212,20 +226,19 @@ DROP TABLE IF EXISTS `venta`;
 CREATE TABLE `venta` (
   `id_venta` int(11) NOT NULL AUTO_INCREMENT,
   `id_usuario` int(11) NOT NULL,
-  `tipo_compropago` char(1) NOT NULL,
+  `id_compropago` int(11) NOT NULL,
   `fecha_venta` date NOT NULL,
   `total_venta` decimal(19,2) DEFAULT NULL,
   PRIMARY KEY (`id_venta`),
   KEY `id_usuario` (`id_usuario`),
+  KEY `fk_venta_comprobante_pago1_idx` (`id_compropago`),
+  CONSTRAINT `fk_venta_comprobante_pago1` FOREIGN KEY (`id_compropago`) REFERENCES `comprobante_pago` (`id_compropago`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `venta_ibfk_4` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of venta
 -- ----------------------------
-INSERT INTO `venta` VALUES ('1', '1', '1', '2015-11-27', '13.00');
-INSERT INTO `venta` VALUES ('2', '1', '1', '2015-11-27', '15.00');
-INSERT INTO `venta` VALUES ('3', '1', '0', '2015-11-27', '12.00');
 
 -- ----------------------------
 -- Procedure structure for sp_add_products
@@ -276,10 +289,11 @@ DROP PROCEDURE IF EXISTS `sp_get_sale`;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_sale`(IN `vid_usuario` INT)
 BEGIN
-  SELECT v.id_venta,v.fecha_venta,v.tipo_compropago,v.total_venta,u.id_usuario,u.alias_usuario,
+  SELECT v.id_venta,v.fecha_venta,cp.tipo_compropago,v.total_venta,u.id_usuario,u.alias_usuario,
   count(p.id_producto) as nro_productos
   FROM detalle_venta dt INNER JOIN venta v ON v.id_venta=dt.id_venta
   INNER JOIN producto p ON p.id_producto=dt.id_producto
+  INNER JOIN comprobante_pago cp ON cp.id_compropago=v.id_compropago
   INNER JOIN usuario u ON u.id_usuario=v.id_usuario
   WHERE u.id_usuario=vid_usuario
   GROUP BY v.id_venta;
@@ -313,8 +327,45 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_insert_sale`(IN `vid_usuario` INT,IN `vtipo_compropago` char(1), IN `vfecha_venta` date,IN `vtotal_venta` decimal(19,2),
 OUT `idventa_out` INT)
 BEGIN
-INSERT INTO venta(id_usuario, tipo_compropago,fecha_venta, total_venta) 
-VALUES(vid_usuario, vtipo_compropago,vfecha_venta, vtotal_venta);
+declare nrodoc INT;
+declare tipodoc INT;
+declare nomdoc VARCHAR(50);
+declare idcomp INT;
+
+SELECT 
+CASE WHEN pe.dni_persona = 0 THEN cj.ruc_clientejuridico
+ELSE pe.dni_persona END INTO nrodoc
+FROM persona pe
+inner join usuario u on u.id_persona=pe.id_persona
+left join cliente c on c.id_persona=pe.id_persona 
+left join cliente_juridico cj on cj.id_cliente=c.id_cliente
+WHERE u.id_usuario=vid_usuario;
+
+SELECT 
+CASE WHEN pe.dni_persona = 0 THEN 1
+ELSE 0 END INTO tipodoc
+FROM persona pe
+inner join usuario u on u.id_persona=pe.id_persona
+left join cliente c on c.id_persona=pe.id_persona 
+left join cliente_juridico cj on cj.id_cliente=c.id_cliente
+WHERE u.id_usuario=vid_usuario;
+
+SELECT 
+CASE WHEN cj.razonsocial_clientejuridico IS NULL THEN pe.nombres_persona
+ELSE cj.razonsocial_clientejuridico END INTO nomdoc
+FROM persona pe
+inner join usuario u on u.id_persona=pe.id_persona
+left join cliente c on c.id_persona=pe.id_persona 
+left join cliente_juridico cj on cj.id_cliente=c.id_cliente
+WHERE u.id_usuario=vid_usuario;
+
+INSERT INTO comprobante_pago(tipo_compropago,tipo_docidentidad,nro_docidentidad,nom_compropago) 
+VALUES(vtipo_compropago,tipodoc,nrodoc,nomdoc);
+
+SELECT LAST_INSERT_ID() INTO idcomp;
+
+INSERT INTO venta(id_usuario,id_compropago,fecha_venta, total_venta) 
+VALUES(vid_usuario, idcomp,vfecha_venta, vtotal_venta);
 SELECT LAST_INSERT_ID() INTO idventa_out;
 SELECT idventa_out;
 END
@@ -343,7 +394,9 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_select_sale`(IN `vid_venta` INT)
 BEGIN
   SELECT v.id_venta,p.id_producto,p.nombre_producto,p.descripcion_producto,dt.cantidad_dtventa,
-  p.precio_producto,dt.total_dtventa,v.tipo_compropago FROM detalle_venta dt INNER JOIN venta v ON v.id_venta=dt.id_venta
+  p.precio_producto,dt.total_dtventa,cp.tipo_compropago,cp.tipo_docidentidad,cp.nro_docidentidad FROM detalle_venta dt 
+  INNER JOIN venta v ON v.id_venta=dt.id_venta
+  INNER JOIN comprobante_pago cp ON cp.id_compropago=v.id_compropago
   INNER JOIN producto p ON p.id_producto=dt.id_producto
   WHERE v.id_venta=vid_venta;
 END

@@ -37,10 +37,16 @@ function fnc_modal_verpedido () {
 		dataType: "json",
 		success: function(resp)
 		{
-			var tcompro_pago;
+			var tcompro_pago,tdociden;
 			if(resp[0].tipo_compropago==1){tcompro_pago='FACTURA'}
 			else{tcompro_pago='BOLETA'}	
-			$tcompropago.html('<div class="row" ><div class="col-md-4"><b>COMPROBANTE PAGO:</b> '+tcompro_pago+'</div><div class="col-md-1"> Nº '+resp[0].id_venta+'</div></div>');
+
+			if(resp[0].tipo_docidentidad==1){tdociden='RUC'}
+			else{tdociden='DNI'}	
+
+			$tcompropago.html('<div class="row" ><div class="col-md-4"><b>COMPROBANTE PAGO:</b> '+tcompro_pago+'</div><div class="col-md-1"> Nº '+resp[0].id_venta+'</div>'
+				+'<div>'+tdociden+'</div>'
+				+'<div>'+resp[0].nro_docidentidad+'</div></div>');
 			var total_venta=0;
 			for (var i=0;i<resp.length;i++ ) {
 				$table_sale2.row.add([resp[i].id_producto,resp[i].nombre_producto,resp[i].descripcion_producto,
