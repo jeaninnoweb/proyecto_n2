@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50621
 File Encoding         : 65001
 
-Date: 2015-11-28 01:49:55
+Date: 2015-11-28 17:45:48
 */
 DROP DATABASE IF EXISTS `bd_nuevo`;
 CREATE DATABASE IF NOT EXISTS `bd_nuevo` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
@@ -89,11 +89,12 @@ CREATE TABLE `comprobante_pago` (
   `nro_docidentidad` int(11) NOT NULL,
   `nom_compropago` varchar(50) NOT NULL,
   PRIMARY KEY (`id_compropago`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of comprobante_pago
 -- ----------------------------
+INSERT INTO `comprobante_pago` VALUES ('1', '1', '1', '2147483647', 'SIDERPERU');
 
 -- ----------------------------
 -- Table structure for detalle_venta
@@ -113,6 +114,7 @@ CREATE TABLE `detalle_venta` (
 -- ----------------------------
 -- Records of detalle_venta
 -- ----------------------------
+INSERT INTO `detalle_venta` VALUES ('1', '1', '1', '2.00');
 
 -- ----------------------------
 -- Table structure for empleado
@@ -234,11 +236,12 @@ CREATE TABLE `venta` (
   KEY `fk_venta_comprobante_pago1_idx` (`id_compropago`),
   CONSTRAINT `fk_venta_comprobante_pago1` FOREIGN KEY (`id_compropago`) REFERENCES `comprobante_pago` (`id_compropago`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `venta_ibfk_4` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of venta
 -- ----------------------------
+INSERT INTO `venta` VALUES ('1', '4', '1', '2015-11-28', '2.00');
 
 -- ----------------------------
 -- Procedure structure for sp_add_products
@@ -308,9 +311,11 @@ DROP PROCEDURE IF EXISTS `sp_get_salestotal`;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_salestotal`()
 BEGIN
-	SELECT v.id_venta,v.fecha_venta,v.tipo_compropago,v.total_venta,u.id_usuario,u.alias_usuario,
-  count(p.id_producto) as nro_productos,pe.nombres_persona,pe.dni_persona
-  FROM detalle_venta dt INNER JOIN venta v ON v.id_venta=dt.id_venta
+	SELECT v.id_venta,v.fecha_venta,count(p.id_producto) as nro_productos,v.total_venta,u.id_usuario,u.alias_usuario,
+  cp.nom_compropago,cp.tipo_compropago,cp.tipo_docidentidad,cp.nro_docidentidad,pe.nombres_persona
+  FROM detalle_venta dt 
+	INNER JOIN venta v ON v.id_venta=dt.id_venta
+	INNER JOIN comprobante_pago cp ON cp.id_compropago=v.id_compropago
   INNER JOIN producto p ON p.id_producto=dt.id_producto
   INNER JOIN usuario u ON u.id_usuario=v.id_usuario  
 	INNER JOIN persona pe ON pe.id_persona=u.id_persona
@@ -394,11 +399,38 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_select_sale`(IN `vid_venta` INT)
 BEGIN
   SELECT v.id_venta,p.id_producto,p.nombre_producto,p.descripcion_producto,dt.cantidad_dtventa,
-  p.precio_producto,dt.total_dtventa,cp.tipo_compropago,cp.tipo_docidentidad,cp.nro_docidentidad FROM detalle_venta dt 
+  p.precio_producto,dt.total_dtventa,cp.tipo_compropago,cp.tipo_docidentidad,cp.nro_docidentidad,
+	cp.nom_compropago
+	FROM detalle_venta dt 
   INNER JOIN venta v ON v.id_venta=dt.id_venta
   INNER JOIN comprobante_pago cp ON cp.id_compropago=v.id_compropago
   INNER JOIN producto p ON p.id_producto=dt.id_producto
+	INNER JOIN usuario u ON u.id_usuario=v.id_usuario
   WHERE v.id_venta=vid_venta;
+END
+;;
+DELIMITER ;
+
+-- ----------------------------
+-- Procedure structure for sp_insert_salem
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `sp_insert_salem`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_insert_salem`(IN `vid_usuario` INT,IN `vtipo_compropago` char(1), IN `vfecha_venta` date,
+IN `vtotal_venta` decimal(19,2),IN `vnom_compropago` VARCHAR(50),IN `vtipo_docidentidad` CHAR(1),IN `vnro_docidentidad` INT,
+OUT `idventa_out` INT)
+BEGIN
+DECLARE idcomp INT;
+
+INSERT INTO comprobante_pago(tipo_compropago,tipo_docidentidad,nro_docidentidad,nom_compropago) 
+VALUES(vtipo_compropago,vtipo_docidentidad,vnro_docidentidad,vnom_compropago);
+
+SELECT LAST_INSERT_ID() INTO idcomp;
+
+INSERT INTO venta(id_usuario,id_compropago,fecha_venta, total_venta) 
+VALUES(vid_usuario, idcomp,vfecha_venta, vtotal_venta);
+SELECT LAST_INSERT_ID() INTO idventa_out;
+SELECT idventa_out;
 END
 ;;
 DELIMITER ;

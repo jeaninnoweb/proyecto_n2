@@ -2,23 +2,6 @@
 
 class Venta_model extends CI_Model {
 
-  // public function registrar_venta($data)
-  // {
-  //   $fecha_venta=$data['fecha_venta'];
-  //   $tipo_compropago=$data['tipo_compropago'];
-  //   $total_venta=$data['total_venta'];
-  //   $id_usuario=$this->session->userdata('id_usuario');
-  //   $query=$this->db->query("CALL sp_insert_sale($id_usuario,'$tipo_compropago','$fecha_venta',$total_venta,@idventa_out);");
-
-  //   if ($query->num_rows()==1)
-  //   {
-  //    return $query->row();
-  //   }
-  //   else
-  //   {
-  //    return false; 
-  //   }
-  // }
 
   // public function agregar_producto($id_venta,$id_producto,$cant_producto)
   // {
@@ -52,6 +35,29 @@ class Venta_model extends CI_Model {
     {
       return false;
     }   
+  }
+
+  public function registrar_ventam($data)
+  {
+    $fecha_venta=$data['fecha_venta'];
+    $tipo_compropago=$data['tipo_compropago'];
+    $nom_compropago=$data['nom_compropago'];
+    $tipo_docidentidad=$data['tipo_docidentidad'];
+    $nro_docidentidad=$data['nro_docidentidad'];
+    $total_venta=$data['total_venta'];    
+    $id_usuario=$this->session->userdata('id_usuario');
+
+    $query=$this->db->query("CALL sp_insert_salem($id_usuario,'$tipo_compropago','$fecha_venta',$total_venta,
+    '$nom_compropago', $tipo_docidentidad, $nro_docidentidad,@idventa_out);");
+
+    if ($query->num_rows()==1)
+    {
+     return $query->row();
+    }
+    else
+    {
+     return false; 
+    }
   }
 
   // public function consultar_venta($data)

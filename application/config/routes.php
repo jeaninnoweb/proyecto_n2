@@ -64,3 +64,4 @@ $route['listar_productos'] = "pedido/listar_productos";
 $route['listar_ventas'] = "pedido/listar_ventas";
 $route['consultar_venta'] = "pedido/consultar_venta";
 $route['listar_ventastotales'] = "venta/listar_ventastotales";
+$route['registrar_ventam'] = "venta/registrar_ventam";
