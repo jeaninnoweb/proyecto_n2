@@ -14,14 +14,28 @@ $(document).ready(init_reportes);
 //================================
 function init_reportes()
 {
-	bar_productos();
+	fnc_report_products();
     
 }
 //____________________________________________________________________________________________________________________________________________________________________________________________________
+function fnc_report_products(){
+	var array=[];
+	var object={};   
+	$.getJSON("report_products", function (resp){ 
+		for (var i = 0; i < resp.length; i++) {
+			object={
+                    "category": resp[i].nombre_producto,
+                    "column-1": resp[i].cantventas                    
+                }
+                array.push(object);
+		};
+		
+	});
+	bar_productos(array);
+}
 
 
-
-function bar_productos () {
+function bar_productos (array) {
 	AmCharts.makeChart("chartdiv",
 				{
 					"type": "serial",
@@ -69,20 +83,7 @@ function bar_productos () {
 							"text": "Chart Title"
 						}
 					],
-					"dataProvider": [
-						{
-							"category": "category 1",
-							"column-1": 8
-						},
-						{
-							"category": "category 2",
-							"column-1": 6
-						},
-						{
-							"category": "category 3",
-							"column-1": 2
-						}
-					]
+					"dataProvider": array
 				}
 			);
 }

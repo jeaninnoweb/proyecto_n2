@@ -71,3 +71,4 @@ $route['registrar_producto'] = "producto/registrar_producto";
 $route['listar_usuario'] = "usuario/listar_usuario";
 $route['listar_permisos'] = "usuario/listar_permisos";
 $route['reportes'] = "reportes/index";
+$route['report_products'] = "reportes/report_products";
