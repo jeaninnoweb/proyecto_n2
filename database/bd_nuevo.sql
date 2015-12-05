@@ -10,11 +10,8 @@ Target Server Type    : MYSQL
 Target Server Version : 50621
 File Encoding         : 65001
 
-Date: 2015-11-28 17:45:48
+Date: 2015-12-05 01:44:35
 */
-DROP DATABASE IF EXISTS `bd_nuevo`;
-CREATE DATABASE IF NOT EXISTS `bd_nuevo` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `bd_nuevo`;
 
 SET FOREIGN_KEY_CHECKS=0;
 
@@ -89,12 +86,17 @@ CREATE TABLE `comprobante_pago` (
   `nro_docidentidad` int(11) NOT NULL,
   `nom_compropago` varchar(50) NOT NULL,
   PRIMARY KEY (`id_compropago`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of comprobante_pago
 -- ----------------------------
 INSERT INTO `comprobante_pago` VALUES ('1', '1', '1', '2147483647', 'SIDERPERU');
+INSERT INTO `comprobante_pago` VALUES ('2', '1', '1', '777777', 'ggggg');
+INSERT INTO `comprobante_pago` VALUES ('3', '0', '0', '72662378', 'jean');
+INSERT INTO `comprobante_pago` VALUES ('4', '1', '0', '47965560', '4796556080000');
+INSERT INTO `comprobante_pago` VALUES ('5', '0', '0', '478547741', 'praga');
+INSERT INTO `comprobante_pago` VALUES ('6', '0', '0', '88888888', 'demo');
 
 -- ----------------------------
 -- Table structure for detalle_venta
@@ -115,6 +117,13 @@ CREATE TABLE `detalle_venta` (
 -- Records of detalle_venta
 -- ----------------------------
 INSERT INTO `detalle_venta` VALUES ('1', '1', '1', '2.00');
+INSERT INTO `detalle_venta` VALUES ('2', '1', '2', '4.00');
+INSERT INTO `detalle_venta` VALUES ('4', '1', '15', '30.00');
+INSERT INTO `detalle_venta` VALUES ('5', '1', '10', '20.00');
+INSERT INTO `detalle_venta` VALUES ('6', '1', '2', '4.00');
+INSERT INTO `detalle_venta` VALUES ('2', '2', '2', '6.00');
+INSERT INTO `detalle_venta` VALUES ('4', '4', '4', '8.00');
+INSERT INTO `detalle_venta` VALUES ('3', '5', '3', '9.00');
 
 -- ----------------------------
 -- Table structure for empleado
@@ -142,14 +151,15 @@ CREATE TABLE `permisos` (
   `nombre_permisos` varchar(50) NOT NULL,
   `descripcion_permisos` varchar(100) NOT NULL,
   PRIMARY KEY (`id_permisos`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of permisos
 -- ----------------------------
 INSERT INTO `permisos` VALUES ('1', 'ADMINISTRADOR', 'ADMINISTRADOR');
-INSERT INTO `permisos` VALUES ('2', 'CLIENTE', 'CLIENTE');
-INSERT INTO `permisos` VALUES ('3', 'EMPLEADO', 'EMPLEADO');
+INSERT INTO `permisos` VALUES ('2', 'CLIENTE NATURAL', 'CLIENTE NATURAL');
+INSERT INTO `permisos` VALUES ('3', 'CLIENTE JURIDICO', 'CLIENTE JURIDICO');
+INSERT INTO `permisos` VALUES ('4', 'EMPLEADO', 'EMPLEADO');
 
 -- ----------------------------
 -- Table structure for persona
@@ -219,7 +229,7 @@ CREATE TABLE `usuario` (
 INSERT INTO `usuario` VALUES ('1', '2', '2', 'demo', 'demo');
 INSERT INTO `usuario` VALUES ('2', '1', '1', 'admin', 'admin');
 INSERT INTO `usuario` VALUES ('3', '2', '3', 'cliente', 'cliente');
-INSERT INTO `usuario` VALUES ('4', '2', '4', 'sider', 'sider');
+INSERT INTO `usuario` VALUES ('4', '3', '4', 'sider', 'sider');
 
 -- ----------------------------
 -- Table structure for venta
@@ -236,12 +246,17 @@ CREATE TABLE `venta` (
   KEY `fk_venta_comprobante_pago1_idx` (`id_compropago`),
   CONSTRAINT `fk_venta_comprobante_pago1` FOREIGN KEY (`id_compropago`) REFERENCES `comprobante_pago` (`id_compropago`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `venta_ibfk_4` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of venta
 -- ----------------------------
 INSERT INTO `venta` VALUES ('1', '4', '1', '2015-11-28', '2.00');
+INSERT INTO `venta` VALUES ('2', '2', '2', '2015-11-28', '10.00');
+INSERT INTO `venta` VALUES ('3', '2', '3', '2015-11-28', '9.00');
+INSERT INTO `venta` VALUES ('4', '2', '4', '2015-12-01', '38.00');
+INSERT INTO `venta` VALUES ('5', '2', '5', '2015-12-01', '20.00');
+INSERT INTO `venta` VALUES ('6', '1', '6', '2015-12-01', '4.00');
 
 -- ----------------------------
 -- Procedure structure for sp_add_products
@@ -325,6 +340,33 @@ END
 DELIMITER ;
 
 -- ----------------------------
+-- Procedure structure for sp_get_users
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `sp_get_users`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_users`()
+BEGIN
+	SELECT u.id_usuario,u.alias_usuario,u.password_usuario,p.nombre_permisos,pe.nombres_persona FROM usuario u
+	INNER JOIN permisos p ON p.id_permisos=u.id_permisos
+	INNER JOIN persona pe ON pe.id_persona=u.id_persona;
+END
+;;
+DELIMITER ;
+
+-- ----------------------------
+-- Procedure structure for sp_insert_product
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `sp_insert_product`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_insert_product`(IN `vnombre_producto` varchar(100),IN `vdescripcion_producto` varchar(300),IN `vprecio_producto` decimal(19,2))
+BEGIN
+	INSERT INTO producto(nombre_producto, descripcion_producto, precio_producto,imagen_producto) 
+VALUES(vnombre_producto,vdescripcion_producto,vprecio_producto,'');
+END
+;;
+DELIMITER ;
+
+-- ----------------------------
 -- Procedure structure for sp_insert_sale
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `sp_insert_sale`;
@@ -378,6 +420,30 @@ END
 DELIMITER ;
 
 -- ----------------------------
+-- Procedure structure for sp_insert_salem
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `sp_insert_salem`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_insert_salem`(IN `vid_usuario` INT,IN `vtipo_compropago` char(1), IN `vfecha_venta` date,
+IN `vtotal_venta` decimal(19,2),IN `vnom_compropago` VARCHAR(50),IN `vtipo_docidentidad` CHAR(1),IN `vnro_docidentidad` INT,
+OUT `idventa_out` INT)
+BEGIN
+DECLARE idcomp INT;
+
+INSERT INTO comprobante_pago(tipo_compropago,tipo_docidentidad,nro_docidentidad,nom_compropago) 
+VALUES(vtipo_compropago,vtipo_docidentidad,vnro_docidentidad,vnom_compropago);
+
+SELECT LAST_INSERT_ID() INTO idcomp;
+
+INSERT INTO venta(id_usuario,id_compropago,fecha_venta, total_venta) 
+VALUES(vid_usuario, idcomp,vfecha_venta, vtotal_venta);
+SELECT LAST_INSERT_ID() INTO idventa_out;
+SELECT idventa_out;
+END
+;;
+DELIMITER ;
+
+-- ----------------------------
 -- Procedure structure for sp_login_user
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `sp_login_user`;
@@ -407,30 +473,6 @@ BEGIN
   INNER JOIN producto p ON p.id_producto=dt.id_producto
 	INNER JOIN usuario u ON u.id_usuario=v.id_usuario
   WHERE v.id_venta=vid_venta;
-END
-;;
-DELIMITER ;
-
--- ----------------------------
--- Procedure structure for sp_insert_salem
--- ----------------------------
-DROP PROCEDURE IF EXISTS `sp_insert_salem`;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_insert_salem`(IN `vid_usuario` INT,IN `vtipo_compropago` char(1), IN `vfecha_venta` date,
-IN `vtotal_venta` decimal(19,2),IN `vnom_compropago` VARCHAR(50),IN `vtipo_docidentidad` CHAR(1),IN `vnro_docidentidad` INT,
-OUT `idventa_out` INT)
-BEGIN
-DECLARE idcomp INT;
-
-INSERT INTO comprobante_pago(tipo_compropago,tipo_docidentidad,nro_docidentidad,nom_compropago) 
-VALUES(vtipo_compropago,vtipo_docidentidad,vnro_docidentidad,vnom_compropago);
-
-SELECT LAST_INSERT_ID() INTO idcomp;
-
-INSERT INTO venta(id_usuario,id_compropago,fecha_venta, total_venta) 
-VALUES(vid_usuario, idcomp,vfecha_venta, vtotal_venta);
-SELECT LAST_INSERT_ID() INTO idventa_out;
-SELECT idventa_out;
 END
 ;;
 DELIMITER ;
