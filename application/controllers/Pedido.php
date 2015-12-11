@@ -61,7 +61,7 @@ class Pedido extends CI_Controller {
 
 		for ($i = 0; $i < $count; $i++)
 		{
-			$agregar_producto=$this->pedido_model->agregar_producto($data['id_venta'][0],$data['all_products'][$i],$data['cant_products'][$i]);
+			$agregar_producto=$this->pedido_model->agregar_producto($data['id_venta'],$data['all_products'][$i],$data['cant_products'][$i]);
 	  	}
 	  	echo json_encode(1);
 	  	

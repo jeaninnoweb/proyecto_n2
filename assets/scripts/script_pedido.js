@@ -28,7 +28,7 @@ function init_pagepedido()
    
 	/*1º*/$(document).on('click','.modal_ver_pedido',fnc_modal_verpedido);
 	/*2º*/$btn_modal_nuevopedido.on('click',fnc_modal_nuevopedido);
-	/*3º*/$btn_guardar_pedido.on('click',fnc_guardar_pedido); 
+	// 3º$btn_guardar_pedido.on('click',fnc_guardar_pedido); 
 	/*4º*/$select_compropago.on('change',fnc_change_comprobante);	        
 }
 //____________________________________________________________________________________________________________________________________________________________________________________________________
