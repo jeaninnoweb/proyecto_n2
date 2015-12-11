@@ -25,6 +25,13 @@ class Usuario extends CI_Controller {
 				case 2:
 					$this->load->view('principal/menu-cliente.html');
 					break;
+					case 3:
+				$this->load->view('principal/menu-cliente.html');
+				break;
+				
+				case 4:
+				$this->load->view('principal/menu.html');
+				break;
 			}
 			$this->load->view('usuario/usuario.html');
 			$this->load->view('usuario/modal_usuario.html');

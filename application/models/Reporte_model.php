@@ -2,9 +2,11 @@
 
 class Reporte_model extends CI_Model {
 
-  public function report_products()
+  public function report_products($data)
   {
-    $query=$this->db->query("CALL sp_report_products();");
+     $anio=$data['anio'];
+     $mes=$data['mes'];
+    $query=$this->db->query("CALL sp_report_products($anio,$mes);");
 
     if ($query->num_rows()>0) 
     {
@@ -16,43 +18,21 @@ class Reporte_model extends CI_Model {
     }   
   }
 
-  // public function registrar_ventam($data)
-  // {
-  //   $fecha_venta=$data['fecha_venta'];
-  //   $tipo_compropago=$data['tipo_compropago'];
-  //   $nom_compropago=$data['nom_compropago'];
-  //   $tipo_docidentidad=$data['tipo_docidentidad'];
-  //   $nro_docidentidad=$data['nro_docidentidad'];
-  //   $total_venta=$data['total_venta'];    
-  //   $id_usuario=$this->session->userdata('id_usuario');
+  public function report_clientes($data)
+  {
+     $anio=$data['anio'];
+     $mes=$data['mes'];
+    $query=$this->db->query("CALL sp_report_clientes($anio,$mes);");
 
-  //   $query=$this->db->query("CALL sp_insert_salem($id_usuario,'$tipo_compropago','$fecha_venta',$total_venta,
-  //   '$nom_compropago', $tipo_docidentidad, $nro_docidentidad,@idventa_out);");
-
-  //   if ($query->num_rows()==1)
-  //   {
-  //    return $query->row();
-  //   }
-  //   else
-  //   {
-  //    return false; 
-  //   }
-  // }
-
-  // public function consultar_venta($data)
-  // {
-  //   $id_venta=$data['id_venta'];
-  //   $query=$this->db->query("CALL sp_select_sale($id_venta);");
-
-  //   if ($query->num_rows()>0) 
-  //   {
-  //     return $query->result();
-  //   }
-  //   else
-  //   {
-  //     return false;
-  //   } 
-  // }
+    if ($query->num_rows()>0) 
+    {
+      return $query->result();
+    }
+    else
+    {
+      return false;
+    }   
+  }
 }
 
    

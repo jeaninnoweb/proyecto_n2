@@ -19,12 +19,19 @@ class venta extends CI_Controller {
 			$this->load->view('principal/navbar.html');
 			switch ($idpermisos) {
 				case 1:
-					$this->load->view('principal/menu.html');
-					break;
+				$this->load->view('principal/menu.html');
+				break;
 				
 				case 2:
-					$this->load->view('principal/menu-cliente.html');
-					break;
+				$this->load->view('principal/menu-cliente.html');
+				break;
+				case 3:
+				$this->load->view('principal/menu-cliente.html');
+				break;
+				
+				case 4:
+				$this->load->view('principal/menu.html');
+				break;
 			}
 			$this->load->view('venta/venta.html');
 			$this->load->view('venta/modal_venta.html');
@@ -41,7 +48,7 @@ class venta extends CI_Controller {
 	public function listar_ventastotales()
 	{
 		$listar_ventastotales=$this->venta_model->listar_ventastotales();
-    	echo json_encode($listar_ventastotales);
+		echo json_encode($listar_ventastotales);
 	}
 
 	public function registrar_ventam()

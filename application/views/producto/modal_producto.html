@@ -8,31 +8,33 @@
 				<h4 class="modal-title">Registro de Producto</h4>
 			</div>
 			<div class="modal-body" style="height:150px;">
+				<form id="from-producto" class="form-horizontal">			
 				<div class="col-md-12">
-					<div class="form-group" style="margin-bottom:50px;">
+					<div class="form-group" >
 						<label class="col-lg-3 control-label">Nombre</label>
 						<div class="col-lg-9">
-							<input type="text" class="form-control rproducto" placeholder="Nombre de porducto" id="txt_nombrep">
+							<input type="text" class="form-control rproducto" placeholder="Nombre de porducto" name="producto" id="txt_nombrep" required>
 						</div>
 					</div>
-					<div class="form-group" style="margin-bottom:103px;">
+					<div class="form-group" >
 						<label class="col-lg-3 control-label">Descripción</label>
 						<div class="col-lg-9">
-							<input type="text" class="form-control rproducto" placeholder="Descripción" id="txt_descp">
+							<input type="text" class="form-control rproducto" placeholder="Descripción" name="descripcion" id="txt_descp" required>
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-lg-3 control-label">Precio S/.</label>
 						<div class="col-lg-9">
-							<input type="text" class="form-control rproducto" placeholder="Precio S/." id="txt_preciop">
+							<input type="text" class="form-control rproducto" name="precio" placeholder="Precio S/." id="txt_preciop" required>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="modal-footer" style="margin-top:20px;">
 				<button data-dismiss="modal" class="btn btn-default" type="button">Cancelar</button>
-				<button class="btn btn-primary" id="btn-guardar-producto">Guardar</button>
+				<button class="btn btn-primary" id="btn-guardar-producto" type="submit">Guardar</button>
 			</div> 
+			</form>
 		</div>
 	</div>
 </div>

@@ -21,12 +21,19 @@ class Login extends CI_Controller {
 
 			switch ($idpermisos) {
 				case 1:
-					$this->load->view('principal/menu.html');
-					break;
+				$this->load->view('principal/menu.html');
+				break;
 				
 				case 2:
-					$this->load->view('principal/menu-cliente.html');
-					break;
+				$this->load->view('principal/menu-cliente.html');
+				break;
+				case 3:
+				$this->load->view('principal/menu-cliente.html');
+				break;
+				
+				case 4:
+				$this->load->view('principal/menu.html');
+				break;
 			}
 			
 			$this->load->view('principal/index.html');
@@ -50,11 +57,11 @@ class Login extends CI_Controller {
 
 		if($login==TRUE){
 			$var= array(
-			'id_usuario' => $login->id_usuario,
-			'id_permisos' => $login->id_permisos,
-			'nombres_persona' => $login->nombres_persona,
-			'alias_usuario' => $login->alias_usuario,
-			'login' => TRUE);
+				'id_usuario' => $login->id_usuario,
+				'id_permisos' => $login->id_permisos,
+				'nombres_persona' => $login->nombres_persona,
+				'alias_usuario' => $login->alias_usuario,
+				'login' => TRUE);
 			$this->session->set_userdata($var);
 			echo  json_encode($var);
 		}else{
@@ -64,11 +71,11 @@ class Login extends CI_Controller {
 	}
 
 	public function logout()
-    { 
-        $this->session->sess_destroy();           
-        echo '<script>
-        sessionStorage.clear();
-        window.location.href="'.base_url().'"
-        </script>';
-    } 
+	{ 
+		$this->session->sess_destroy();           
+		echo '<script>
+		sessionStorage.clear();
+		window.location.href="'.base_url().'"
+	</script>';
+} 
 }

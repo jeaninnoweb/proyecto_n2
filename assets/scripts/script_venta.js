@@ -40,7 +40,7 @@ function fnc_modal_nuevaventa ()
 	$modal_venta.modal('show');
 	listar_produtos();
 	$('.rventa').val('');
-	$('#demo-step-wz a[href="#demo-step-tab1"]').tab('show');	
+	$('#demo-bv-wz a[href="#demo-bv-tab1"]').tab('show');	
 } 
 
 //================================
@@ -74,7 +74,7 @@ function fnc_guardar_venta()
 	data.nom_compropago=$txt_cliente.val();
 	data.tipo_docidentidad=$cbo_tdoc.val();
 	data.nro_docidentidad=$txt_nrodoc.val();
-
+if(data.tipo_compropago==null || data.nom_compropago=='' || data.tipo_docidentidad==null || data.nro_docidentidad==''){return;}
 	$.ajax({
 		url: "registrar_ventam",
 		type:'POST',
@@ -170,4 +170,99 @@ function listar_ventastotales ()
 	});
 }
 
+$('#demo-bv-wz-form').bootstrapValidator({
+		message: 'This value is not valid',
+		feedbackIcons: {
+		valid: 'fa fa-check-circle fa-lg text-success',
+		invalid: 'fa fa-times-circle fa-lg',
+		validating: 'fa fa-refresh'
+		},
+		fields: {
+		compropago: {
+			message: 'Seleccione un tipo de comprobante de pago.',
+			validators: {
+				notEmpty: {
+					message: 'Seleccione un tipo de comprobante de pago.',
+				}
+			}
+		},cbo_tdoc: {
+			message: 'Seleccione un tipo de documento de identidad.',
+			validators: {
+				notEmpty: {
+					message: 'Seleccione un tipo de documento de identidad.',
+				}
+			}
+		},
+		txt_cliente: {
+			message: 'Ingrese un cliente.',
+			validators: {
+				notEmpty: {
+					message: 'Ingrese un cliente.'
+				}
+			}
+		},
+		txt_nrodoc: {
+			message: 'Ingrese Nro de documento.',
+			validators: {
+				notEmpty: {
+					message: 'Ingrese Nro de documento.',
+				}
+			}
+		},
+		firstName: {
+			validators: {
+				notEmpty: {
+					message: 'The first name is required and cannot be empty'
+				},
+				regexp: {
+					regexp: /^[A-Z\s]+$/i,
+					message: 'The first name can only consist of alphabetical characters and spaces'
+				}
+			}
+		},
+		lastName: {
+			validators: {
+				notEmpty: {
+					message: 'The last name is required and cannot be empty'
+				},
+				regexp: {
+					regexp: /^[A-Z\s]+$/i,
+					message: 'The last name can only consist of alphabetical characters and spaces'
+				}
+			}
+		},
+		phoneNumber: {
+			validators: {
+				notEmpty: {
+					message: 'The phone number is required and cannot be empty'
+				},
+				digits: {
+					message: 'The value can contain only digits'
+				}
+			}
+		},
+		address: {
+			validators: {
+				notEmpty: {
+					message: 'The address is required'
+				}
+			}
+		}
+		}
+	}).on('success.field.bv', function(e, data) {
+		// $(e.target)  --> The field element
+		// data.bv      --> The BootstrapValidator instance
+		// data.field   --> The field name
+		// data.element --> The field element
 
+		var $parent = data.element.parents('.form-group');
+
+		// Remove the has-success class
+		$parent.removeClass('has-success');
+
+
+		// Hide the success icon
+		//$parent.find('.form-control-feedback[data-bv-icon-for="' + data.field + '"]').hide();
+	}).on('error.form.bv', function(e) {
+		isValid = false;
+	});

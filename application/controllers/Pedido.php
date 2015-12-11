@@ -25,6 +25,13 @@ class Pedido extends CI_Controller {
 				case 2:
 					$this->load->view('principal/menu-cliente.html');
 					break;
+					case 3:
+				$this->load->view('principal/menu-cliente.html');
+				break;
+				
+				case 4:
+				$this->load->view('principal/menu.html');
+				break;
 			}
 			$this->load->view('pedido/pedido.html');
 			$this->load->view('pedido/modal_pedido.html');
